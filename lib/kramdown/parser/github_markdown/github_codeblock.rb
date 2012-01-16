@@ -29,7 +29,7 @@ module Kramdown
   module Parser
     class GithubMarkdown
       GITHUB_CODEBLOCK_START = /^```/
-      GITHUB_CODEBLOCK_MATCH = /^```([^\s]*)?\s*?\n(.*?)^```\s*\n/m
+      GITHUB_CODEBLOCK_MATCH = /^```([^\s]*)?\s*?\n(.*?)^```[\ \t]*\n/m
       
       # Parse the indented codeblock at the current location.
       def parse_github_codeblock
