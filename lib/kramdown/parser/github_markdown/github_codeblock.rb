@@ -20,21 +20,25 @@
 #++
 #
 
+require 'kramdown/parser/kramdown/blank_line'
+require 'kramdown/parser/kramdown/extensions'
+require 'kramdown/parser/kramdown/eob'
+require 'kramdown/parser/kramdown/paragraph'
+
 module Kramdown
-
-  # This module contains all available parsers. A parser takes an input string and converts the
-  # string to an element tree.
-  #
-  # New parsers should be derived from the Base class which provides common functionality - see its
-  # API documentation for how to create a custom converter class.
   module Parser
-
-    autoload :Base, 'kramdown/parser/base'
-    autoload :Kramdown, 'kramdown/parser/kramdown'
-    autoload :Html, 'kramdown/parser/html'
-    autoload :Markdown, 'kramdown/parser/markdown'
-    autoload :GithubMarkdown, 'kramdown/parser/github_markdown'
-
+    class GithubMarkdown
+      GITHUB_CODEBLOCK_START = /^```/
+      GITHUB_CODEBLOCK_MATCH = /^```([^\s]*)?\s*?\n(.*?)^```\s*\n/m
+      
+      # Parse the indented codeblock at the current location.
+      def parse_github_codeblock
+        data = @src.scan(self.class::GITHUB_CODEBLOCK_MATCH)
+        matches = data.match GITHUB_CODEBLOCK_MATCH
+        @tree.children << new_block_el(:codeblock, matches[2], nil, {"language" => matches[1]})
+        true
+      end
+      define_parser(:github_codeblock, GITHUB_CODEBLOCK_START)
+    end
   end
-
 end
